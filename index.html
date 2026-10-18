@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج اللياقة البدنية والسباحة - 90 دقيقة</title>
+    
+    <!-- Mandatory Favicon & Theme Color Settings -->
+    <link rel="icon" href="icon.JPG">
+    <link rel="apple-touch-icon" href="icon.JPG">
+    <meta name="theme-color" content="#F0F8FF">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.294.0/dist/umd/lucide.min.js"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#1976D2',
+                            deep: '#0D47A1',
+                            sky: '#64B5F6',
+                            light: '#BBDEFB',
+                            bg: '#F0F8FF',
+                            text: '#17324D',
+                            muted: '#58718A',
+                            green: '#2EAD67',
+                            greenLight: '#DDF7E5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F0F8FF;
+            color: #17324D;
+            font-family: 'Tajawal', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F0F8FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #64B5F6;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1976D2;
+        }
+
+        .gradient-header {
+            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 60%, #64B5F6 100%);
+        }
+
+        .glass-card {
+            background: #FFFFFF;
+            border: 1px solid #BBDEFB;
+            box-shadow: 0 4px 15px -2px rgba(25, 118, 210, 0.08);
+            border-radius: 1rem;
+        }
+
+        .exercise-card {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(25, 118, 210, 0.15);
+        }
+
+        .custom-checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #2EAD67;
+            cursor: pointer;
+        }
+
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .glass-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                break-inside: avoid;
+            }
+            .print-full-width {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-light selection:text-brand-deep">
+
+    <!-- Header & Navigation -->
+    <header class="gradient-header text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20">
+                        <i data-lucide="waves" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold leading-tight">منصة اللياقة للسباح التنافسي</h1>
+                        <p class="text-xs text-brand-light font-medium">البرنامج الشامل 90 دقيقة (فئة 11-12 سنة)</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 no-print">
+                    <button onclick="window.print()" class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold py-2 px-3 rounded-lg border border-white/20 transition">
+                        <i data-lucide="printer" class="w-4 h-4"></i>
+                        <span>طباعة / PDF</span>
+                    </button>
+                    <button onclick="resetWorkout()" class="flex items-center gap-1.5 bg-red-500/80 hover:bg-red-600 text-white text-xs font-semibold py-2 px-3 rounded-lg transition">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        <span>إعادة ضبط</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Timers & Global Progress Panel (Top Dashboard) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
+            
+            <!-- Overall Session Timer Card -->
+            <div class="glass-card p-5 border-l-4 border-l-brand-primary flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold text-brand-muted uppercase tracking-wider flex items-center gap-1">
+                        <i data-lucide="clock" class="w-4 h-4 text-brand-primary"></i>
+                        مؤقت الجلسة الإجمالي
+                    </span>
+                    <span class="text-xs bg-brand-light text-brand-deep px-2 py-0.5 rounded-full font-bold">الهدف: 90 دقيقة</span>
+                </div>
+                
+                <div class="text-center my-2">
+                    <div id="overall-timer-display" class="text-4xl font-extrabold tracking-tight text-brand-deep font-mono">00:00:00</div>
+                    <div class="text-xs text-brand-muted mt-1" id="overall-timer-status">المؤقت متوقف</div>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button id="btn-overall-start" onclick="startOverallTimer()" class="flex-1 bg-brand-primary hover:bg-brand-deep text-white text-xs py-2 px-3 rounded-lg font-bold transition flex items-center justify-center gap-1">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i> بدء الجلسة
+                    </button>
+                    <button id="btn-overall-pause" onclick="pauseOverallTimer()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-xs py-2 px-3 rounded-lg font-bold transition flex items-center justify-center gap-1" disabled>
+                        <i data-lucide="pause" class="w-3.5 h-3.5"></i> إيقاف
+                    </button>
+                    <button onclick="resetOverallTimer()" class="bg-gray-200 hover:bg-gray-300 text-brand-text text-xs py-2 px-3 rounded-lg font-bold transition">
+                        تصفير
+                    </button>
+                </div>
+            </div>
+
+            <!-- Segment Timer Card -->
+            <div class="glass-card p-5 border-l-4 border-l-brand-sky flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold text-brand-muted uppercase tracking-wider flex items-center gap-1">
+                        <i data-lucide="timer" class="w-4 h-4 text-brand-sky"></i>
+                        مؤقت القسم الحالي
+                    </span>
+                    <span id="current-segment-badge" class="text-xs bg-brand-bg text-brand-primary px-2 py-0.5 rounded-full font-bold truncate max-w-[150px]">
+                        1. الإحماء وتنقل المفاصل
+                    </span>
+                </div>
+
+                <div class="text-center my-2">
+                    <div id="segment-timer-display" class="text-4xl font-extrabold tracking-tight text-brand-primary font-mono">15:00</div>
+                    <div class="text-xs text-brand-muted mt-1" id="segment-timer-status">جاهز للبدء</div>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button id="btn-segment-start" onclick="startSegmentTimer()" class="flex-1 bg-brand-sky hover:bg-brand-primary text-white text-xs py-2 px-3 rounded-lg font-bold transition flex items-center justify-center gap-1">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i> ابدأ القسم
+                    </button>
+                    <button id="btn-segment-pause" onclick="pauseSegmentTimer()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-xs py-2 px-3 rounded-lg font-bold transition flex items-center justify-center gap-1" disabled>
+                        <i data-lucide="pause" class="w-3.5 h-3.5"></i> إيقاف
+                    </button>
+                    <button onclick="resetSegmentTimer()" class="bg-gray-200 hover:bg-gray-300 text-brand-text text-xs py-2 px-3 rounded-lg font-bold transition">
+                        إعادة
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overall Workout Progress Card -->
+            <div class="glass-card p-5 border-l-4 border-l-brand-green flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-brand-muted uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-green"></i>
+                            إنجاز التمرين الشامل
+                        </span>
+                        <span id="progress-text" class="text-sm font-extrabold text-brand-green">0%</span>
+                    </div>
+
+                    <div class="w-full bg-gray-200 rounded-full h-3 mb-3 overflow-hidden">
+                        <div id="progress-bar" class="bg-brand-green h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+
+                    <div class="text-xs text-brand-muted space-y-1">
+                        <div class="flex justify-between">
+                            <span>التمارين المكتملة:</span>
+                            <span id="completed-count" class="font-bold text-brand-text">0 / 0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>التحقق الإجمالي للوقت:</span>
+                            <span id="validation-status" class="font-bold text-brand-green">جاري الفحص...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rest Timer Quick Widget -->
+                <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between bg-brand-bg/50 p-2 rounded-lg">
+                    <span class="text-xs font-bold text-brand-text flex items-center gap-1">
+                        <i data-lucide="coffee" class="w-3.5 h-3.5 text-brand-primary"></i> مؤقت الراحة السريع:
+                    </span>
+                    <div class="flex items-center gap-1">
+                        <button onclick="startQuickRest(30)" class="text-xs bg-white hover:bg-brand-light text-brand-deep px-2 py-1 rounded border border-brand-light font-semibold shadow-sm">30 ث</button>
+                        <button onclick="startQuickRest(60)" class="text-xs bg-white hover:bg-brand-light text-brand-deep px-2 py-1 rounded border border-brand-light font-semibold shadow-sm">60 ث</button>
+                        <span id="quick-rest-display" class="text-xs font-bold text-brand-primary font-mono min-w-[35px] text-left">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Athlete Profile & Important Notice Bar -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Athlete Profile Card -->
+            <div class="glass-card p-5 md:col-span-1 border-t-4 border-t-brand-primary">
+                <div class="flex items-center space-x-3 space-x-reverse mb-4">
+                    <div class="w-12 h-12 bg-brand-light/50 text-brand-deep rounded-full flex items-center justify-center font-bold text-lg border border-brand-light">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-brand-deep">بطاقة الرياضي التنافسي</h2>
+                        <span class="text-xs bg-brand-light text-brand-deep px-2 py-0.5 rounded font-medium">سباح تنافسي (11-12 سنة)</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-xs mb-4">
+                    <div class="bg-brand-bg p-2.5 rounded-lg border border-brand-light/40">
+                        <span class="text-brand-muted block">العمر:</span>
+                        <span class="font-bold text-brand-text">11–12 سنة</span>
+                    </div>
+                    <div class="bg-brand-bg p-2.5 rounded-lg border border-brand-light/40">
+                        <span class="text-brand-muted block">الطول / الوزن:</span>
+                        <span class="font-bold text-brand-text">145 سم / 49.5 كجم</span>
+                    </div>
+                    <div class="bg-brand-bg p-2.5 rounded-lg border border-brand-light/40 col-span-2">
+                        <span class="text-brand-muted block">خبرة السباحة:</span>
+                        <span class="font-bold text-brand-text">~3 سنوات تدريب تنافسي موجه</span>
+                    </div>
+                </div>
+
+                <!-- Special Alert: Archery Today -->
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900 flex items-start gap-2">
+                    <i data-lucide="target" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                    <div>
+                        <span class="font-bold block">ملاحظة هامة جداً (جدول اليوم):</span>
+                        لدى السباح <span class="font-bold">تدريب رماية (Archery) اليوم</span>. تم تصميم تمارين الكتفين والقبضة بعناية فائقة للحفاظ على انتعاش العضلات وتجنب إرهاق السحب أو التعليق.
+                    </div>
+                </div>
+
+                <!-- Recent History Summary -->
+                <div class="mt-3 text-xs text-brand-muted">
+                    <span class="font-bold text-brand-text block mb-1">السجل التدريبي الأخير (قبل يومين):</span>
+                    <ul class="list-disc list-inside space-y-0.5 pr-1">
+                        <li>سير رياضي: 30 دقيقة (5.58 كم)</li>
+                        <li>دراجة ثابتة: 15 دقيقة</li>
+                        <li>عقلة / قفز حبل: 10 د / 15 د</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Equipment List Card -->
+            <div class="glass-card p-5 md:col-span-2 border-t-4 border-t-brand-sky flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-base font-bold text-brand-deep flex items-center gap-2">
+                            <i data-lucide="dumbbell" class="w-5 h-5 text-brand-primary"></i>
+                            المعدات الرياضية المتاحة واستخدامها الموجه
+                        </h2>
+                        <span class="text-xs bg-brand-greenLight text-brand-green px-2.5 py-1 rounded-full font-bold">11 معدة مجهزة</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 text-xs">
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>سير رياضي (Treadmill)</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>دراجة ثابتة</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>حبل قفز عادي</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>حبل قفز كرات (Ball rope)</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>حبال مقاومة بمقابض</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>أربطة مقاومة متدرجة</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>أثقال خفيفة (Dumbbells)</span>
+                        </div>
+                        <div class="p-2 bg-amber-50 rounded-lg border border-amber-200 flex items-center gap-2 text-amber-900" title="متاحة ولكن مستبعدة من التمارين الشاقة بسبب تدريب الرماية">
+                            <i data-lucide="alert-circle" class="w-4 h-4 text-amber-600"></i>
+                            <span class="font-semibold">عقلة (مستبعدة للتعب)</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>سلم الرشاقة (Agility ladder)</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>حواجز منخفضة (Hurdles)</span>
+                        </div>
+                        <div class="p-2 bg-brand-bg rounded-lg border border-brand-light/50 flex items-center gap-2 col-span-2 sm:col-span-1">
+                            <i data-lucide="check" class="w-4 h-4 text-brand-green"></i>
+                            <span>منصة خطوة (Step platform)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-brand-light/30 rounded-lg border border-brand-light text-xs text-brand-deep flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-brand-primary"></i>
+                        تم توزيع الأدوات باعتدال لمنع إجهاد المفاصل والعضلات قبل جلسة الرماية المسائية.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Safety Rules Panel -->
+        <section class="glass-card p-5 border-r-4 border-r-amber-500 bg-gradient-to-l from-amber-50/40 to-white">
+            <div class="flex items-center gap-2 mb-3">
+                <i data-lucide="shield-alert" class="w-6 h-6 text-amber-600"></i>
+                <h2 class="text-base font-bold text-amber-900">قواعد السلامة والإرشادات الفنية الأساسية</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-brand-text">
+                <div class="flex items-start gap-2 bg-white p-2.5 rounded border border-amber-100">
+                    <i data-lucide="user-check" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span><strong>الإشراف الأكاديمي:</strong> يتطلب هذا البرنامج (فئة 11–12 سنة) وجود مقتدر بالغ للإشراف والتحكم.</span>
+                </div>
+                <div class="flex items-start gap-2 bg-white p-2.5 rounded border border-amber-100">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span><strong>النوعية قبل الكمية:</strong> الأداء الفني السليم والتحكم بالحركة أهم بمليون مرة من الوصول للإجهاد.</span>
+                </div>
+                <div class="flex items-start gap-2 bg-white p-2.5 rounded border border-amber-100">
+                    <i data-lucide="target" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span><strong>حماية الرماية:</strong> تجنب تمارين التعليق بالعقلة، أو سحب الأثقال الثقيلة لحفظ انضباط الكتف والقبضة.</span>
+                </div>
+                <div class="flex items-start gap-2 bg-white p-2.5 rounded border border-amber-100">
+                    <i data-lucide="gauge" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span><strong>سرعة السير مرنة:</strong> حد 10 كم/س هو حد أقصى اختياري، والسرعة الموصى بها اليوم هي 4–7 كم/س.</span>
+                </div>
+                <div class="flex items-start gap-2 bg-white p-2.5 rounded border border-amber-100">
+                    <i data-lucide="activity" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span><strong>التوقف الفوري:</strong> توقف فوراً عند الشعور بدوار، ألم مفصلي، ضيق تنفس غير عادي أو غثيان.</span>
+                </div>
+                <div class="flex items-start gap-2 bg-white p-2.5 rounded border border-amber-100">
+                    <i data-lucide="droplet" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span><strong>الترطيب المستمر:</strong> شرب الماء والراحة أجزاء رئيسية من نجاح الجلسة وتجديد الاستشفاء.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Master Workout Timeline Navigation (Tabs) -->
+        <div class="glass-card p-4 no-print overflow-x-auto">
+            <div class="flex items-center justify-between mb-3 min-w-[600px]">
+                <h3 class="text-sm font-bold text-brand-deep flex items-center gap-2">
+                    <i data-lucide="list-ordered" class="w-4 h-4 text-brand-primary"></i>
+                    الجدول الزمني المعتمد للجلسة (90 دقيقة بالضبط)
+                </h3>
+                <span class="text-xs text-brand-muted">اضغط على أي مرحلة للانتقال الفوري إليها</span>
+            </div>
+
+            <div id="timeline-tabs" class="flex gap-2 min-w-[850px] pb-1">
+                <!-- Tabs inserted via JavaScript for perfect sync -->
+            </div>
+        </div>
+
+        <!-- WORKOUT SEGMENTS CONTAINER -->
+        <div class="space-y-6">
+
+            <!-- SEGMENT 1: Warm-up (15 min) -->
+            <section id="segment-1" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 1</span>
+                            <h2 class="text-lg font-bold text-brand-deep">الإحماء وتنقل المفاصل (Warm-up & Mobility)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">تجهيز الجهاز الدوري والتنفسي والمفاصل للنشاط دون التسبب في إجهاد</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">15 دقيقة (00:00 - 15:00)</span>
+                        <button onclick="setCurrentSegment(0)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Treadmill Section (10 min) -->
+                <div class="mb-6 bg-brand-bg/50 p-4 rounded-xl border border-brand-light/60">
+                    <h3 class="text-sm font-bold text-brand-deep mb-3 flex items-center gap-2">
+                        <i data-lucide="footprints" class="w-4 h-4 text-brand-primary"></i>
+                        الجزء الأول: السير الرياضي التدريجي (10 دقائق)
+                    </h3>
+                    
+                    <!-- Speed Chart Table -->
+                    <div class="overflow-x-auto mb-4">
+                        <table class="w-full text-xs text-right border-collapse">
+                            <thead>
+                                <tr class="bg-brand-light/50 text-brand-deep border-b border-brand-light">
+                                    <th class="p-2 rounded-r-lg">الفقرة الزمنية</th>
+                                    <th class="p-2">السرعة المحددة</th>
+                                    <th class="p-2">نمط الحركة</th>
+                                    <th class="p-2 rounded-l-lg">ملاحظات التكيف</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200/60 text-brand-text">
+                                <tr>
+                                    <td class="p-2 font-mono font-bold">00:00 - 02:00</td>
+                                    <td class="p-2 font-bold text-brand-primary">4 كم / ساعة</td>
+                                    <td class="p-2">مشي هادئ ولطيف</td>
+                                    <td class="p-2 text-brand-muted">بدء تحريك الدورة الدموية والتنفس المنتظم</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-mono font-bold">02:00 - 04:00</td>
+                                    <td class="p-2 font-bold text-brand-primary">5 كم / ساعة</td>
+                                    <td class="p-2">مشي نشط مع أرجوحة الذراعين</td>
+                                    <td class="p-2 text-brand-muted">التركيز على انتصاب القامة ومرونة القدمين</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-mono font-bold">04:00 - 06:00</td>
+                                    <td class="p-2 font-bold text-brand-primary">6 كم / ساعة</td>
+                                    <td class="p-2">مشي سريع جداً أو هرولة خفيفة</td>
+                                    <td class="p-2 text-brand-muted">زيادة تدفق الدم للعضلات الرئيسية</td>
+                                </tr>
+                                <tr class="bg-amber-50/60">
+                                    <td class="p-2 font-mono font-bold">06:00 - 07:00</td>
+                                    <td class="p-2 font-bold text-amber-700">7 كم / ساعة (اختياري)</td>
+                                    <td class="p-2">جري خفيف جداً ومريح</td>
+                                    <td class="p-2 text-amber-800 font-medium">فقط إذا كان الرياضي مرتاحاً تماماً، وإلا البقاء على 6 كم/س</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-mono font-bold">07:00 - 08:00</td>
+                                    <td class="p-2 font-bold text-brand-primary">6 كم / ساعة</td>
+                                    <td class="p-2">مشي سريع متدرج للانخفاض</td>
+                                    <td class="p-2 text-brand-muted">بدء مرحلة التهدئة التدريجية</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-mono font-bold">08:00 - 09:00</td>
+                                    <td class="p-2 font-bold text-brand-primary">5 كم / ساعة</td>
+                                    <td class="p-2">مشي متوسط</td>
+                                    <td class="p-2 text-brand-muted">استعادة معدل التنفس الطبيعي</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-mono font-bold">09:00 - 10:00</td>
+                                    <td class="p-2 font-bold text-brand-primary">4 كم / ساعة</td>
+                                    <td class="p-2">مشي هادئ للختام</td>
+                                    <td class="p-2 text-brand-muted">الاستعداد للتوقف الآمن والنزول من الجهاز</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-lg border border-brand-light text-xs text-brand-muted flex items-start gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-brand-primary shrink-0 mt-0.5"></i>
+                        <div>
+                            <strong>تعليمات الأمان على السير:</strong> يجب التأكد من تثبيت مشبك الأمان (Safety Key) بملابس السباح، وتجنب الصعود أو النزل أثناء دوران الحزام. النزول يتم فقط بعد التوقف التام وتحت إشراف مباشر.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Joint Mobility Section (5 min) -->
+                <div>
+                    <h3 class="text-sm font-bold text-brand-deep mb-3 flex items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 text-brand-primary"></i>
+                        الجزء الثاني: حركية وتنقل المفاصل (5 دقائق)
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        
+                        <!-- Mobility Card 1 -->
+                        <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-brand-deep">1. دوائر الكاحل (Ankle Circles)</span>
+                                    <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                                </div>
+                                <p class="text-xs text-brand-muted mb-2"><strong>البداية:</strong> الوقوف بثبات، رفع قدم واحدة قليلاً عن الأرض.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> تدوير الكاحل بحركة دائرية بطيئة 10 مرات للداخل و10 للخارج لكل قدم.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>التنفس:</strong> شهيق وزفير منتظمين.</p>
+                            </div>
+                            <div class="mt-2 text-[11px] bg-red-50 text-red-700 p-1.5 rounded"><strong>أخطاء شائعة:</strong> السرعة العالية أو التحريك من الركبة بدلاً من الكاحل.</div>
+                        </div>
+
+                        <!-- Mobility Card 2 -->
+                        <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-brand-deep">2. ثني وتمديد الركبتين الخفيف</span>
+                                    <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                                </div>
+                                <p class="text-xs text-brand-muted mb-2"><strong>البداية:</strong> الوقوف مع وضع اليدين على الفخذين فوق الركبتين مباشرة.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> ثني خفيف جداً ومستنيم للركبتين ثم مدّهما دون ضغط لـ 10 تكرارات.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>التنفس:</strong> زفير عند الثني، شهيق عند الاستقامة.</p>
+                            </div>
+                            <div class="mt-2 text-[11px] bg-red-50 text-red-700 p-1.5 rounded"><strong>أخطاء شائعة:</strong> الثني العميق جداً أو الضغط الشديد على الصابونة.</div>
+                        </div>
+
+                        <!-- Mobility Card 3 -->
+                        <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-brand-deep">3. أرجوحة الورك السلسة (Hip Swings)</span>
+                                    <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                                </div>
+                                <p class="text-xs text-brand-muted mb-2"><strong>البداية:</strong> الإمساك بجدار أو حافة لتوازن الجسم.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> أرجوحة الساق للأمام والخلف بمدى حركي مريح دون اندفاع (8 تكرارات/ساق).</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>التنفس:</strong> تنفس طبيعي ومستمر.</p>
+                            </div>
+                            <div class="mt-2 text-[11px] bg-red-50 text-red-700 p-1.5 rounded"><strong>أخطاء شائعة:</strong> التقوس الزائد في أسفل الظهر أثناء الأرجوحة.</div>
+                        </div>
+
+                        <!-- Mobility Card 4 -->
+                        <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-brand-deep">4. تدوير الصدر (Thoracic Rotations)</span>
+                                    <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                                </div>
+                                <p class="text-xs text-brand-muted mb-2"><strong>البداية:</strong> الوقوف بعرض الكتفين مع وضع اليدين خلف الرأس بحب ولطف.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> تدوير الجزء العلوي من الجذع لليمين واليسار بسلاسة (6 تكرارات لكل جانب).</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>التنفس:</strong> زفير مع التدوير، شهيق عند العودة للمنتصف.</p>
+                            </div>
+                            <div class="mt-2 text-[11px] bg-red-50 text-red-700 p-1.5 rounded"><strong>أخطاء شائعة:</strong> تحريك الحوض مع الجذع؛ الحوض يجب أن يظل ثابتاً.</div>
+                        </div>
+
+                        <!-- Mobility Card 5 -->
+                        <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-brand-deep">5. دوائر الكتف اللطيفة (Shoulder Circles)</span>
+                                    <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                                </div>
+                                <p class="text-xs text-brand-muted mb-2"><strong>البداية:</strong> الوقوف بانتصاب مع إرخاء الذراعين بجانب الجسم.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> تدوير الكتفين للأمام 8 مرات ثم للخلف 8 مرات ببطء وتناغم.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>التنفس:</strong> شهيق عند رفع الكتفين، زفير عند إنزالهما.</p>
+                            </div>
+                            <div class="mt-2 text-[11px] bg-amber-50 text-amber-800 p-1.5 rounded"><strong>تنبيه الرماية:</strong> عدم تحميل أي وزن، أداء الحركة بنعومة تامة.</div>
+                        </div>
+
+                        <!-- Mobility Card 6 -->
+                        <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-brand-deep">6. تحريك المعصمين (Wrist Circles)</span>
+                                    <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                                </div>
+                                <p class="text-xs text-brand-muted mb-2"><strong>البداية:</strong> شبك أصابع اليدين معاً أمام الصدر.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> رسم شكل ثمانية (8) بالمعصمين بمرونة لمدة 30 ثانية.</p>
+                                <p class="text-xs text-brand-muted mb-2"><strong>التنفس:</strong> تنفس عميق وهادئ.</p>
+                            </div>
+                            <div class="mt-2 text-[11px] bg-red-50 text-red-700 p-1.5 rounded"><strong>أخطاء شائعة:</strong> العصر الشديد للأصابع أو التشنج.</div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 2: Speed (8 min) -->
+            <section id="segment-2" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 2</span>
+                            <h2 class="text-lg font-bold text-brand-deep">تدريبات السرعة والأقدام السريعة (Speed & Quick Feet)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">تنشيط الجهاز العصبي وحركات الأقدام السريعة دون الوصول لمرحلة الإجهاد المفرط</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">8 دقائق (15:00 - 23:00)</span>
+                        <button onclick="setCurrentSegment(1)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Speed Step 1 -->
+                    <div class="glass-card p-4 bg-white border border-brand-light">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs bg-brand-light text-brand-deep font-bold px-2 py-0.5 rounded">دقيقة 00:00 - 02:00</span>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <h4 class="font-bold text-sm text-brand-deep mb-2">1. تبديل هادئ على الدراجة</h4>
+                        <p class="text-xs text-brand-muted mb-2">تبديل سلس ومنخفض المقاومة على الدراجة الثابتة لتنشيط الدورة الدموية في القدمين وتجهيز المفاصل.</p>
+                        <span class="text-[11px] text-brand-green font-bold block">الهدف: إحماء عصبي وعضلي بدون إجهاد.</span>
+                    </div>
+
+                    <!-- Speed Step 2 -->
+                    <div class="glass-card p-4 bg-white border border-brand-light border-l-4 border-l-brand-primary">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs bg-brand-primary text-white font-bold px-2 py-0.5 rounded">دقيقة 02:00 - 06:00</span>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <h4 class="font-bold text-sm text-brand-deep mb-2">2. نوبات حركة الأقدام السريعة (Quick-Feet Bursts)</h4>
+                        <p class="text-xs text-brand-muted mb-2">أداء 4–6 جولات من خطفات الأقدام السريعة جداً في المكان لمدة <strong>5–8 ثوانٍ فقط</strong> مع استراحة كاملة (30–45 ثانية) بين كل جولة.</p>
+                        <p class="text-xs text-brand-muted mb-2"><strong>القواعد:</strong> الحفاظ على منتصف القدم، انثناء خفيف بالركبتين، والتوقف فور تراجع سرعة الحركة.</p>
+                        <span class="text-[11px] text-amber-700 font-bold block">ممنوع إجهاد الأقصى (No all-out sprints).</span>
+                    </div>
+
+                    <!-- Speed Step 3 -->
+                    <div class="glass-card p-4 bg-white border border-brand-light">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs bg-brand-light text-brand-deep font-bold px-2 py-0.5 rounded">دقيقة 06:00 - 08:00</span>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <h4 class="font-bold text-sm text-brand-deep mb-2">3. استعادة التنفس على الدراجة</h4>
+                        <p class="text-xs text-brand-muted mb-2">تبديل بطيء ومريح للغاية على الدراجة الثابتة للعودة لمعدل نبض طبيعي والاستعداد لمحطة الرشاقة.</p>
+                        <span class="text-[11px] text-brand-green font-bold block">الهدف: تهدئة نبض القلب واستعادة الطاقة.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 3: Agility (8 min) -->
+            <section id="segment-3" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 3</span>
+                            <h2 class="text-lg font-bold text-brand-deep">الرشاقة وجودة الحركة (Agility & Movement Quality)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">تنمية التوافق الحركي، التوازن، والتحكم الهابط في الهبوط والارتقاء</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">8 دقائق (23:00 - 31:00)</span>
+                        <button onclick="setCurrentSegment(2)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Agility Station 1 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">1. سلم الرشاقة (Agility Ladder)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <span class="text-[11px] bg-brand-bg text-brand-primary font-bold px-2 py-0.5 rounded inline-block mb-2">الزمن: 2.5 دقيقة</span>
+                            <p class="text-xs text-brand-muted mb-2"><strong>التمرين:</strong> خطوات أمامية وجانبية منتظمة داخل وخارج السلم (In-N-Out / Side Steps).</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> الهبوط على مقدمة القدم، ركبتين جبلتين غير متداخلتين، ونظر متوازن.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 p-1.5 rounded text-brand-deep">التركيز: التوافق والإيقاع وليس السرعة الفوضوية.</div>
+                    </div>
+
+                    <!-- Agility Station 2 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">2. الحواجز المنخفضة (Low Hurdles)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <span class="text-[11px] bg-brand-bg text-brand-primary font-bold px-2 py-0.5 rounded inline-block mb-2">الزمن: 2.5 دقيقة</span>
+                            <p class="text-xs text-brand-muted mb-2"><strong>التمرين:</strong> التخطي الآمن فوق الحواجز المنخفضة جدًا (Step-overs) أو قفزات منخفضة متحكم بها.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> هبوط صامت بدون صوت، امتصاص الصدمات بثناء الركبتين واستقامة الظهر.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-amber-50 p-1.5 rounded text-amber-900">شرط الأمان: حواجز منخفضة جداً ومستقرة وتحت الإشراف.</div>
+                    </div>
+
+                    <!-- Agility Station 3 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">3. منصة الخطوة (Step Platform)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <span class="text-[11px] bg-brand-bg text-brand-primary font-bold px-2 py-0.5 rounded inline-block mb-2">الزمن: 3 دقائق</span>
+                            <p class="text-xs text-brand-muted mb-2"><strong>التمرين:</strong> الصعود والهبوط المتبادل السريع والمنظم على منصة الخطوة بارتفاع منخفض.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> وضع القدم بالكامل على المنصة، الحفاظ على استقامة الحوض والركبة.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 p-1.5 rounded text-brand-deep">استراحة: 30 ثانية راحة بين الجولات.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 4: Jump Rope (12 min) -->
+            <section id="segment-4" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 4</span>
+                            <h2 class="text-lg font-bold text-brand-deep">قفز الحبل والقدرة على التحمل (Jump Rope Session)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">تعزيز القوة الانفجارية الخفيفة للقدمين والمرونة دون إجهاد الكاحلين</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">12 دقيقة (31:00 - 43:00)</span>
+                        <button onclick="setCurrentSegment(3)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Conditional Goal Protocol -->
+                <div class="bg-blue-50/70 border border-blue-200 p-4 rounded-xl mb-5 text-xs text-brand-text">
+                    <div class="flex items-center gap-2 font-bold text-brand-deep mb-2">
+                        <i data-lucide="target" class="w-4 h-4 text-brand-primary"></i>
+                        بروتوكول القفز والتدرج المشروط (الهدف المشروط: 1,000 قفزة)
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-white p-2.5 rounded border border-blue-100">
+                            <strong class="text-brand-primary block mb-1">خيار أ (للسياق المعتاد والمتقدم):</strong>
+                            إذا كان السباح متعوداً على 1,000 قفزة، تقسم إلى 10 مجموعات (100 قفزة) أو 5 مجموعات (200 قفزة) مع 30-45 ثانية راحة وشرب ماء بين المجموعات.
+                        </div>
+                        <div class="bg-white p-2.5 rounded border border-blue-100">
+                            <strong class="text-brand-primary block mb-1">خيار ب (للتدرج والتعب اليومي):</strong>
+                            إذا وجد تعب أو عدم تدرج، يُخفض الهدف إلى 400 - 600 قفزة مقسمة بمرونة عالية، والتوقف الفوري عند اختلال التوازن.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Rope Drill 1 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">1. القفز بالحبل العادي (الأساسي)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> قفزات منخفضة جداً (2-3 سم عن الأرض)، دوران الحبل من المعصمين وليس من الكتفين كاملين.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأحذية والسطح:</strong> ارتداء حذاء رياضي ماص للصدمات على أرضية مرنة.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-greenLight text-brand-green font-bold p-1.5 rounded">الأداة الرئيسية للجلسة</div>
+                    </div>
+
+                    <!-- Rope Drill 2 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">2. حبل الكرات (Ball-style Rope)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> استخدام حبل الكرات لفترة قصيرة جداً لتطوير التوافق الحركي بدون رفع المجهود البدني.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>شرط هام:</strong> لا يُضيف أي قفزات إضافية شاقة، ويُستخدم للتنوع فقط.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-amber-50 text-amber-800 p-1.5 rounded">اختياري للتوافق الحركي فقط</div>
+                    </div>
+
+                    <!-- Rope Drill 3 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">3. فترات الراحة والترطيب</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الراحة:</strong> أخذ راحة لمدة 45 ثانية بعد كل مجموعة قفز مع أخذ رشفات ماء منتظمة.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>السلامة:</strong> الهبوط الخفيف الهادئ لمنع أي إجهاد لعضلات الساق أو الكاحل.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded">إجباري للحفاظ على الانتعاش</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 5: Strength Circuit (18 min) -->
+            <section id="segment-5" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 5</span>
+                            <h2 class="text-lg font-bold text-brand-deep">دائرة القوة العضلية المتوازنة (Balanced Strength Circuit)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">تعزيز القوة الأساسية للجسم بأوزان خفيفة ووزن الجسم ودون الوصول للفشل العضلي</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">18 دقيقة (43:00 - 61:00)</span>
+                        <button onclick="setCurrentSegment(4)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Toggle Optional Exercises Switch -->
+                <div class="mb-4 bg-brand-bg p-3 rounded-xl border border-brand-light flex items-center justify-between no-print">
+                    <span class="text-xs font-bold text-brand-deep flex items-center gap-2">
+                        <i data-lucide="sliders" class="w-4 h-4 text-brand-primary"></i>
+                        تمارين إضافة/اختيارية (المشي على الجدار Squat Hold / قفز القرفصاء المنخفض):
+                    </span>
+                    <button onclick="toggleOptionalExercises()" id="btn-toggle-optional" class="text-xs bg-brand-light text-brand-deep font-bold px-3 py-1.5 rounded-lg hover:bg-brand-sky hover:text-white transition">
+                        إظهار التمارين الاختيارية
+                    </button>
+                </div>
+
+                <!-- Detailed Exercises Cards (10 required items structured) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <!-- Ex 1: Squat to Step -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light space-y-2">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h4 class="font-bold text-sm text-brand-deep">1. القرفصاء للكرسي/المنصة (Squat to Chair/Step)</h4>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                            <div><strong>الأداة:</strong> كرسي مستقر / منصة خطوة</div>
+                            <div><strong>التكرار:</strong> 10–12 تكرار (مجموعتان)</div>
+                            <div><strong>الراحة:</strong> 45 ثانية بين المجموعات</div>
+                            <div><strong>التنفس:</strong> شهيق أثناء النزول، زفير عند النهوض</div>
+                        </div>
+                        <p class="text-xs text-brand-text"><strong>البداية والأداء:</strong> الوقوف بعرض الكتفين، الارتكاز للخلف ولمس الكرسي بلطف بالورك ثم النهوض بقوة العقبين.</p>
+                        <div class="text-[11px] bg-red-50 text-red-800 p-1.5 rounded"><strong>أخطاء شائعة:</strong> خروج الركبتين للداخل أو رفع العقبين عن الأرض.</div>
+                        <div class="text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded"><strong>البديل الأسهل:</strong> تقليل عمق النزول أو استخدام كرسي أعلى ارتفاعاً.</div>
+                    </div>
+
+                    <!-- Ex 2: Light Band Rows -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light space-y-2">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h4 class="font-bold text-sm text-brand-deep">2. سحب حبل المقاومة الخفيف (Light Band Rows)</h4>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                            <div><strong>الأداة:</strong> رباط مقاومة متدرج خفيف</div>
+                            <div><strong>التكرار:</strong> 10–12 تكرار (مجموعتان)</div>
+                            <div><strong>الراحة:</strong> 45 ثانية بين المجموعات</div>
+                            <div><strong>التنفس:</strong> زفير عند السحب، شهيق عند العودة</div>
+                        </div>
+                        <p class="text-xs text-brand-text"><strong>البداية والأداء:</strong> تثبيت الرباط بكعب القدم أو مقبض ثابت، سحب المقابض نحو الجذع مع ضم لوحي الكتف بلطف.</p>
+                        <div class="text-[11px] bg-amber-50 text-amber-800 p-1.5 rounded"><strong>تنبيه السلامة للرماية:</strong> استخدام أخف شريط مقاومة متوفر لمنع إجهاد الساعد والكتف.</div>
+                        <div class="text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded"><strong>البديل الأسهل:</strong> السحب بدون حبل (أرجوحة المرفقين بالهواء).</div>
+                    </div>
+
+                    <!-- Ex 3: Incline Push-ups -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light space-y-2">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h4 class="font-bold text-sm text-brand-deep">3. الضغط المائل على المنصة (Incline Push-ups)</h4>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                            <div><strong>الأداة:</strong> منصة خطوة مرتفعة / حافة مرتفعة</div>
+                            <div><strong>التكرار:</strong> 8–10 تكرارات (مجموعتان)</div>
+                            <div><strong>الراحة:</strong> 45 ثانية بين المجموعات</div>
+                            <div><strong>التنفس:</strong> شهيق أثناء النزول، زفير أثناء الدفع</div>
+                        </div>
+                        <p class="text-xs text-brand-text"><strong>البداية والأداء:</strong> وضع اليدين على المنصة بعرض الكتفين، الحفاظ على استقامة الجسم من الرأس للعقبين.</p>
+                        <div class="text-[11px] bg-red-50 text-red-800 p-1.5 rounded"><strong>أخطاء شائعة:</strong> نزول الحوض لأسفل أو بروز الرقبة للأمام.</div>
+                        <div class="text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded"><strong>البديل الأسهل:</strong> أداء التمرين على الجدار (Wall Push-ups).</div>
+                    </div>
+
+                    <!-- Ex 4: Glute Bridges -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light space-y-2">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h4 class="font-bold text-sm text-brand-deep">4. جسر المقعدة (Glute Bridges)</h4>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                            <div><strong>الأداة:</strong> بساط تدريب (Mat)</div>
+                            <div><strong>التكرار:</strong> 12 تكرار (مجموعتان)</div>
+                            <div><strong>الراحة:</strong> 30 ثانية بين المجموعات</div>
+                            <div><strong>التنفس:</strong> زفير عند رفع الحوض، شهيق عند النزول</div>
+                        </div>
+                        <p class="text-xs text-brand-text"><strong>البداية والأداء:</strong> الاستلقاء على الظهر ثني الركبتين، رفع الحوض لأعلى حتى يتشكل خط مستقيم من الركبة للكتف.</p>
+                        <div class="text-[11px] bg-red-50 text-red-800 p-1.5 rounded"><strong>أخطاء شائعة:</strong> المبالغة في رفع الحوض وتقويس أسفل الظهر.</div>
+                        <div class="text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded"><strong>البديل الأسهل:</strong> تقليل مدى الرفع مع تثبيت ثانيتين في الأعلى.</div>
+                    </div>
+
+                    <!-- Ex 5: Step-ups -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light space-y-2">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h4 class="font-bold text-sm text-brand-deep">5. صعود المنصة المتبادل (Step-ups)</h4>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                            <div><strong>الأداة:</strong> منصة خطوة (Step Platform)</div>
+                            <div><strong>التكرار:</strong> 8 تكرارات لكل ساق</div>
+                            <div><strong>الراحة:</strong> 40 ثانية بين المجموعات</div>
+                            <div><strong>التنفس:</strong> زفير عند الصعود، شهيق عند الهبوط</div>
+                        </div>
+                        <p class="text-xs text-brand-text"><strong>البداية والأداء:</strong> صعود المنصة بقدم واحدة، فرد القدم بالكامل فوق المنصة ثم الهبوط بتحكم سلس.</p>
+                        <div class="text-[11px] bg-red-50 text-red-800 p-1.5 rounded"><strong>أخطاء شائعة:</strong> الاتكاء والدفع بالقوة من القدم السفلية الموجودة على الأرض.</div>
+                        <div class="text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded"><strong>البديل الأسهل:</strong> استخدام درجة سلم بارتفاع منخفض جداً.</div>
+                    </div>
+
+                    <!-- Ex 6: Short Planks -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light space-y-2">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h4 class="font-bold text-sm text-brand-deep">6. الثبات الأمامي القصيرة (Short Planks)</h4>
+                            <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                            <div><strong>الأداة:</strong> بساط تدريب</div>
+                            <div><strong>المدة:</strong> 15–20 ثانية (3 تكرارات)</div>
+                            <div><strong>الراحة:</strong> 30 ثانية بين التكرارات</div>
+                            <div><strong>التنفس:</strong> تنفس هادئ ومستمر، عدم حبس النفس</div>
+                        </div>
+                        <p class="text-xs text-brand-text"><strong>البداية والأداء:</strong> الاستناد على الساعدين وأطراف الأصابع، المحافظة على استقامة العمود الفقري والبطن مشدود.</p>
+                        <div class="text-[11px] bg-red-50 text-red-800 p-1.5 rounded"><strong>أخطاء شائعة:</strong> نزول الحوض أو رفع المقعدة لأعلى مجدداً.</div>
+                        <div class="text-[11px] bg-brand-light/40 text-brand-deep p-1.5 rounded"><strong>البديل الأسهل:</strong> خفض الركبتين على الأرض (Plank on knees).</div>
+                    </div>
+
+                    <!-- OPTIONAL EXERCISES CONTAINER -->
+                    <div id="optional-exercises-container" class="hidden col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-dashed border-brand-light">
+                        
+                        <!-- Optional 1: Wall Sit -->
+                        <div class="exercise-card bg-amber-50/40 p-4 rounded-xl border border-amber-200 space-y-2">
+                            <div class="flex items-center justify-between border-b pb-2">
+                                <h4 class="font-bold text-sm text-amber-900">7. (اختياري) المشي على الجدار (Wall Sit)</h4>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                                <div><strong>الشرط:</strong> إذا كان السباح نشيطاً ومستريحاً</div>
+                                <div><strong>المدة:</strong> 15–25 ثانية فقط</div>
+                            </div>
+                            <p class="text-xs text-brand-text"><strong>الأداء:</strong> الاستناد بالظهر على الجدار مع ثني الركبتين بدرجة 90 ثابته.</p>
+                        </div>
+
+                        <!-- Optional 2: Low-vol Jump Squat -->
+                        <div class="exercise-card bg-amber-50/40 p-4 rounded-xl border border-amber-200 space-y-2">
+                            <div class="flex items-center justify-between border-b pb-2">
+                                <h4 class="font-bold text-sm text-amber-900">8. (اختياري) قفز القرفصاء المنخفض (Low-vol Jump Squat)</h4>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-muted">
+                                <div><strong>الشرط:</strong> فقط مع جودة حركة عالية جداً</div>
+                                <div><strong>التكرار:</strong> 4-5 قفزات منخفضة جداً</div>
+                            </div>
+                            <p class="text-xs text-brand-text"><strong>الأداء:</strong> قرفصاء خفيفة مع ارتقاء هادئ جداً وهبوط صامت كلياً.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SEGMENT 6: Shoulder Prep (5 min) - CRITICAL FOR ARCHERY -->
+            <section id="segment-6" class="glass-card p-6 border-t-4 border-t-amber-500 bg-gradient-to-br from-amber-50/20 to-white scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-amber-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-amber-600 text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 6</span>
+                            <h2 class="text-lg font-bold text-amber-900">تجهيز الكتف الموجه للرماية (Shoulder Preparation for Archery)</h2>
+                        </div>
+                        <p class="text-xs text-amber-800 mt-1">تنشيط لطيف وموجّه لمفصل الكتف والكفة المدورة دون أي مجهود أو سحب شاق</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-amber-100 text-amber-900 px-3 py-1.5 rounded-lg font-bold">5 دقائق (61:00 - 66:00)</span>
+                        <button onclick="setCurrentSegment(5)" class="no-print bg-white hover:bg-amber-100 text-amber-900 text-xs font-bold py-1.5 px-3 rounded-lg border border-amber-300 transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Archery Strict Protocol Notice -->
+                <div class="bg-amber-100/70 border border-amber-300 p-3.5 rounded-xl mb-4 text-xs text-amber-950 flex items-start gap-2">
+                    <i data-lucide="shield-alert" class="w-5 h-5 text-amber-700 shrink-0 mt-0.5"></i>
+                    <div>
+                        <strong>بروتوكول حماية الكتف والقبضة للرماية:</strong>
+                        هذا القسم هو "تنشيط لطيف" وليس تمرين قوة. يُمنع منعاً باتاً: رفرفات بالأثقال الشاقة، الضغط على الكتفين، السحب العالي، العقلة، أو أي تمرين يجهد قبضة اليد. في حال الشعور بأي تعب، تُستبدل بحركات حرة بدون مقاومة.
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Shoulder Drill 1 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-amber-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-amber-950">1. دوائر الذراعين بالحجم الصغير</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> فرد الذراعين جانباً ورسم دوائر صغيرة جداً بالهواء لمدة 15 ثانية للأمام و15 ثانية للخلف.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>المقاومة:</strong> وزن الذراع فقط بدون أي أثقال.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-amber-100 text-amber-900 font-bold p-1 rounded">تنشيط بدون أوزان</div>
+                    </div>
+
+                    <!-- Shoulder Drill 2 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-amber-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-amber-950">2. إبعاد الرباط الخفيف (Band Pull-Aparts)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> إمساك أضعف رباط مقاومة متوفر بمدى واسع، وفتحه ببطء لتنشيط أعلى الظهر (8 تكرارات).</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الهدف:</strong> استحضار لوحي الكتف بلطف دون إجهاد.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-amber-100 text-amber-900 font-bold p-1 rounded">أضعف رباط مقاومة متوفر</div>
+                    </div>
+
+                    <!-- Shoulder Drill 3 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-amber-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-amber-950">3. التدوير الخارجي اللطيف (External Rotation)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> تثبيت المرفق بجانب الجذع وتدوير الساعد للخارج برفق تام (6 تكرارات لكل جانب).</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>التكيف:</strong> في حالة أي إجهاد، تُنفذ الحركة بدون رباط.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-amber-100 text-amber-900 font-bold p-1 rounded">الحفاظ على سلامة الكفة المدورة</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 7: Core Stability (8 min) -->
+            <section id="segment-7" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 7</span>
+                            <h2 class="text-lg font-bold text-brand-deep">ثبات الجذع والعضلات العميقة (Core Stability)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">تطوير الثبات المحوري للظهر والبطن لدعم انسيابية جسم السباح بالماء</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">8 دقائق (66:00 - 74:00)</span>
+                        <button onclick="setCurrentSegment(6)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Core 1 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-brand-deep">1. الجسر الأمامي القصير (Front Plank)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>المدة:</strong> 15–20 ثانية (مجموعتان).</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> عمود فقري محايد، تنفس هادئ ومستمر.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-red-50 text-red-700 p-1 rounded">توقف فوراً عند انخفاض أسفل الظهر.</div>
+                    </div>
+
+                    <!-- Core 2 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-brand-deep">2. الثبات الجانبي بالركبتين (Bent-Knee Side Plank)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>المدة:</strong> 12–15 ثانية لكل جانب (مجموعتان).</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> ارتجاز على الساعد والركبة المنسنية للحماية.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 text-brand-deep p-1 rounded">دعم ممتاز للعضلات المائلة.</div>
+                    </div>
+
+                    <!-- Core 3 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-brand-deep">3. تمرين الحشرة الميتة (Dead Bug)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>التكرار:</strong> 6-8 تكرارات تبادلية هادئة.</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> تثبيت أسفل الظهر تماماً ملامساً للأرض.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-greenLight text-brand-green font-bold p-1 rounded">تنسيق عصبي عضلي متطور.</div>
+                    </div>
+
+                    <!-- Core 4 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-brand-deep">4. الانسياب على البطن (Prone Streamline)</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>المدة:</strong> ثبات هادئ 10–12 ثانية (مجموعتان).</p>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الفنيات:</strong> الاستلقاء على البطن ومد الذراعين بوضعية السباحة.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 text-brand-deep p-1 rounded">محاكاة مباشرة لانسيابية السباحة.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 8: Optional Rope Finisher (4 min) -->
+            <section id="segment-8" class="glass-card p-6 border-t-4 border-t-brand-primary scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-primary text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 8</span>
+                            <h2 class="text-lg font-bold text-brand-deep">المُنهي الاختياري للحبل (Optional Rope Finisher)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">مرحلة اختيارية بالكامل لزيادة القليل من النشاط أو الاستبدال بالمشي</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">4 دقائق (74:00 - 78:00)</span>
+                        <button onclick="setCurrentSegment(7)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-brand-bg/60 p-4 rounded-xl border border-brand-light flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-xs text-brand-text">
+                        <div class="font-bold text-brand-deep text-sm">خيارات هذا الجزء (4 دقائق):</div>
+                        <p>1. جولات قصيرة جداً وهادئة من قفز الحبل السلس (15 ثانية قفز / 30 ثانية راحة).</p>
+                        <p>2. <strong>البديل الموصى به عند الشعور بأي إجهاد:</strong> المشي الخفيف حول القاعة مع التنفس العميق.</p>
+                        <span class="text-brand-green font-bold block mt-1">* لا يُشترط أداء قفزات إضافية لإتمام البرنامج بنجاح.</span>
+                    </div>
+
+                    <div class="flex items-center gap-3 shrink-0">
+                        <input type="checkbox" id="finisher-check" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        <label for="finisher-check" class="text-xs font-bold text-brand-deep cursor-pointer">علامة إتمام المُنهي الاختياري</label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 9: Cooldown & Stretching (10 min) -->
+            <section id="segment-9" class="glass-card p-6 border-t-4 border-t-brand-green scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-green text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 9</span>
+                            <h2 class="text-lg font-bold text-brand-deep">التهدئة والإطالات العضلية (Cooldown & Stretching)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">المساعدة في خفض معدل النبض وتفتيح المفاصل وتحفيز عملية الاستشفاء</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-greenLight text-brand-green px-3 py-1.5 rounded-lg font-bold">10 دقائق (78:00 - 88:00)</span>
+                        <button onclick="setCurrentSegment(8)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Stretch 1 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">1. المشي والتنفس المريح</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>المدة:</strong> 2-3 دقائق مشي بطيء جداً مع أخذ شهيق عميق وزفير هادئ لتنزيل نبضات القلب.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-greenLight text-brand-green font-bold p-1 rounded">استعادة التوازن التنفسي</div>
+                    </div>
+
+                    <!-- Stretch 2 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">2. إطالات الساقين والفخذين</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> إطالة السمانة والفخذ الأمامي والخلفي بثبات لمدة 15–20 ثانية لكل عضلة دون ارتداد (No bouncing).</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 text-brand-deep p-1 rounded">ثبات ثابت بدون ألم</div>
+                    </div>
+
+                    <!-- Stretch 3 -->
+                    <div class="exercise-card bg-white p-4 rounded-xl border border-brand-light flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-sm text-brand-deep">3. حركية الظهر والصدر والكتفين</span>
+                                <input type="checkbox" class="custom-checkbox ex-check" onchange="updateProgress()">
+                            </div>
+                            <p class="text-xs text-brand-muted mb-2"><strong>الأداء:</strong> إطالة الصدر على الجدار بلطف، وحركة القط والجمال (Cat-Cow) ببطء للتخلص من أي إجهاد للظهر.</p>
+                        </div>
+                        <div class="mt-2 text-[11px] bg-brand-light/40 text-brand-deep p-1 rounded">راحة حركية كاملة</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEGMENT 10: Final Water Break & Transition (2 min) -->
+            <section id="segment-10" class="glass-card p-6 border-t-4 border-t-brand-deep scroll-mt-20">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-deep text-white text-xs px-2.5 py-1 rounded-full font-bold">المرحلة 10</span>
+                            <h2 class="text-lg font-bold text-brand-deep">الاستراحة النهائية وتهيئة المعدات (Final Water Break)</h2>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-1">اختتام الجلسة الرياضية وتقييم حالة السباح وتجهيزه للنشاط التالي</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs bg-brand-light text-brand-deep px-3 py-1.5 rounded-lg font-bold">دقيقتان (88:00 - 90:00)</span>
+                        <button onclick="setCurrentSegment(9)" class="no-print bg-brand-bg hover:bg-brand-light text-brand-primary text-xs font-bold py-1.5 px-3 rounded-lg border border-brand-light transition">
+                            ضبط المؤقت هنا
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-brand-light/30 p-4 rounded-xl border border-brand-light flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-xs text-brand-text">
+                        <div class="font-bold text-brand-deep text-sm">فحص الإجهاد والتسليم النهائي:</div>
+                        <p>1. شرب كمية مناسبة من الماء وإرجاع المعدات لـأماكنها.</p>
+                        <p>2. سؤال السباح عن حالة الكتفين والساعدين للتحقق من جاهزيته الكاملة لتدريب الرماية اليوم.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3 shrink-0">
+                        <input type="checkbox" id="final-check" class="custom-checkbox ex-check" onchange="updateProgress()">
+                        <label for="final-check" class="text-xs font-bold text-brand-deep cursor-pointer">تم إتمام الجلسة كاملة (90 دقيقة)</label>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-deep text-white mt-12 py-6 border-t border-brand-primary no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-2">
+                <i data-lucide="waves" class="w-5 h-5 text-brand-sky"></i>
+                <span class="font-bold">منظومة الإعداد البدني والرياضي للسباحين - 90 دقيقة</span>
+            </div>
+            <div class="text-brand-light">
+                برنامج مصمم وفق معايير الفئات العمرية (11-12 سنة) والتدرج التدريبي الآمن.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- DATA & TIMELINE STRUCTURE (EXACTLY 90 MINUTES) ---
+        const segmentsData = [
+            { id: 1, name: "الإحماء وتنقل المفاصل", durationMinutes: 15, durationSeconds: 15 * 60, timeRange: "00:00–15:00" },
+            { id: 2, name: "السرعة والأقدام السريعة", durationMinutes: 8, durationSeconds: 8 * 60, timeRange: "15:00–23:00" },
+            { id: 3, name: "الرشاقة جودة الحركة", durationMinutes: 8, durationSeconds: 8 * 60, timeRange: "23:00–31:00" },
+            { id: 4, name: "قفز الحبل والتحمل", durationMinutes: 12, durationSeconds: 12 * 60, timeRange: "31:00–43:00" },
+            { id: 5, name: "دائرة القوة العضلية", durationMinutes: 18, durationSeconds: 18 * 60, timeRange: "43:00–61:00" },
+            { id: 6, name: "تجهيز الكتف للرماية", durationMinutes: 5, durationSeconds: 5 * 60, timeRange: "61:00–66:00" },
+            { id: 7, name: "ثبات الجذع والعضلات العميقة", durationMinutes: 8, durationSeconds: 8 * 60, timeRange: "66:00–74:00" },
+            { id: 8, name: "المُنهي الاختياري للحبل", durationMinutes: 4, durationSeconds: 4 * 60, timeRange: "74:00–78:00" },
+            { id: 9, name: "التهدئة والإطالات العضلية", durationMinutes: 10, durationSeconds: 10 * 60, timeRange: "78:00–88:00" },
+            { id: 10, name: "الاستراحة النهائية والتنقل", durationMinutes: 2, durationSeconds: 2 * 60, timeRange: "88:00–90:00" }
+        ];
+
+        // Global State Variables
+        let overallSeconds = 0;
+        let overallInterval = null;
+
+        let currentSegmentIndex = 0;
+        let segmentRemainingSeconds = segmentsData[0].durationSeconds;
+        let segmentInterval = null;
+
+        let quickRestInterval = null;
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            lucide.createIcons();
+            validateTimeline();
+            renderTimelineTabs();
+            updateSegmentTimerDisplay();
+            updateOverallTimerDisplay();
+            updateProgress();
+        };
+
+        // --- 90-MINUTE TIMELINE VALIDATION ---
+        function validateTimeline() {
+            const totalMinutes = segmentsData.reduce((sum, seg) => sum + seg.durationMinutes, 0);
+            const statusEl = document.getElementById('validation-status');
+            
+            if (totalMinutes === 90) {
+                statusEl.textContent = "متحقق منه (90 دقيقة بالضبط)";
+                statusEl.className = "font-bold text-brand-green";
+            } else {
+                statusEl.textContent = `خطأ: المجموع الإجمالي ${totalMinutes} دقيقة!`;
+                statusEl.className = "font-bold text-red-600";
+            }
+        }
+
+        // --- RENDER TIMELINE TABS ---
+        function renderTimelineTabs() {
+            const container = document.getElementById('timeline-tabs');
+            container.innerHTML = '';
+
+            segmentsData.forEach((seg, index) => {
+                const btn = document.createElement('button');
+                btn.className = `flex-1 py-2 px-3 text-xs font-bold rounded-lg border transition text-right flex flex-col justify-between ${
+                    index === currentSegmentIndex 
+                    ? 'bg-brand-primary text-white border-brand-primary shadow-sm' 
+                    : 'bg-brand-bg text-brand-text border-brand-light hover:bg-brand-light'
+                }`;
+                btn.onclick = () => {
+                    setCurrentSegment(index);
+                    const el = document.getElementById(`segment-${index + 1}`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                };
+
+                btn.innerHTML = `
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="opacity-80">${index + 1}. ${seg.name}</span>
+                    </div>
+                    <div class="text-[10px] opacity-75 font-mono">${seg.durationMinutes} د | ${seg.timeRange}</div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // --- SET CURRENT SEGMENT ---
+        function setCurrentSegment(index) {
+            pauseSegmentTimer();
+            currentSegmentIndex = index;
+            segmentRemainingSeconds = segmentsData[index].durationSeconds;
+            
+            document.getElementById('current-segment-badge').textContent = `${index + 1}. ${segmentsData[index].name}`;
+            document.getElementById('segment-timer-status').textContent = "جاهز للبدء";
+            
+            updateSegmentTimerDisplay();
+            renderTimelineTabs();
+        }
+
+        // --- OVERALL SESSION TIMER ---
+        function startOverallTimer() {
+            if (overallInterval) return; // Prevent duplicates
+            document.getElementById('overall-timer-status').textContent = "جاري الحساب...";
+            document.getElementById('btn-overall-start').disabled = true;
+            document.getElementById('btn-overall-pause').disabled = false;
+
+            overallInterval = setInterval(() => {
+                overallSeconds++;
+                updateOverallTimerDisplay();
+            }, 1000);
+        }
+
+        function pauseOverallTimer() {
+            if (overallInterval) {
+                clearInterval(overallInterval);
+                overallInterval = null;
+            }
+            document.getElementById('overall-timer-status').textContent = "متوقف مؤقتاً";
+            document.getElementById('btn-overall-start').disabled = false;
+            document.getElementById('btn-overall-pause').disabled = true;
+        }
+
+        function resetOverallTimer() {
+            pauseOverallTimer();
+            overallSeconds = 0;
+            updateOverallTimerDisplay();
+            document.getElementById('overall-timer-status').textContent = "المؤقت متوقف";
+        }
+
+        function updateOverallTimerDisplay() {
+            const hrs = Math.floor(overallSeconds / 3600);
+            const mins = Math.floor((overallSeconds % 3600) / 60);
+            const secs = overallSeconds % 60;
+            document.getElementById('overall-timer-display').textContent = 
+                `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        // --- SEGMENT TIMER ---
+        function startSegmentTimer() {
+            if (segmentInterval) return; // Prevent duplicate interval execution
+            document.getElementById('segment-timer-status').textContent = "جاري العد التنازلي...";
+            document.getElementById('btn-segment-start').disabled = true;
+            document.getElementById('btn-segment-pause').disabled = false;
+
+            segmentInterval = setInterval(() => {
+                if (segmentRemainingSeconds > 0) {
+                    segmentRemainingSeconds--;
+                    updateSegmentTimerDisplay();
+                } else {
+                    pauseSegmentTimer();
+                    document.getElementById('segment-timer-status').textContent = "اكتمل هذا القسم!";
+                    playBeepSound();
+                }
+            }, 1000);
+        }
+
+        function pauseSegmentTimer() {
+            if (segmentInterval) {
+                clearInterval(segmentInterval);
+                segmentInterval = null;
+            }
+            document.getElementById('segment-timer-status').textContent = "متوقف مؤقتاً";
+            document.getElementById('btn-segment-start').disabled = false;
+            document.getElementById('btn-segment-pause').disabled = true;
+        }
+
+        function resetSegmentTimer() {
+            pauseSegmentTimer();
+            segmentRemainingSeconds = segmentsData[currentSegmentIndex].durationSeconds;
+            updateSegmentTimerDisplay();
+            document.getElementById('segment-timer-status').textContent = "تمت إعادة الضبط";
+        }
+
+        function updateSegmentTimerDisplay() {
+            const mins = Math.floor(segmentRemainingSeconds / 60);
+            const secs = segmentRemainingSeconds % 60;
+            document.getElementById('segment-timer-display').textContent = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        // --- QUICK REST TIMER ---
+        function startQuickRest(seconds) {
+            if (quickRestInterval) clearInterval(quickRestInterval);
+            let remaining = seconds;
+            const display = document.getElementById('quick-rest-display');
+            display.textContent = `${remaining}ث`;
+
+            quickRestInterval = setInterval(() => {
+                remaining--;
+                if (remaining >= 0) {
+                    display.textContent = `${remaining}ث`;
+                } else {
+                    clearInterval(quickRestInterval);
+                    quickRestInterval = null;
+                    display.textContent = "انتهى!";
+                    playBeepSound();
+                }
+            }, 1000);
+        }
+
+        // --- AUDIO BEEP FEEDBACK (WEB AUDIO API) ---
+        function playBeepSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = 587.33; // D5 note
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio not supported or permitted");
+            }
+        }
+
+        // --- PROGRESS TRACKER ---
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.ex-check');
+            const total = checkboxes.length;
+            let checked = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) checked++;
+            });
+
+            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+            
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-text').textContent = `${percent}%`;
+            document.getElementById('completed-count').textContent = `${checked} / ${total}`;
+        }
+
+        // --- OPTIONAL EXERCISES TOGGLE ---
+        function toggleOptionalExercises() {
+            const container = document.getElementById('optional-exercises-container');
+            const btn = document.getElementById('btn-toggle-optional');
+
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                btn.textContent = "إخفاء التمارين الاختيارية";
+            } else {
+                container.classList.add('hidden');
+                btn.textContent = "إظهار التمارين الاختيارية";
+            }
+            updateProgress();
+        }
+
+        // --- WORKOUT RESET WITH CONFIRMATION ---
+        function resetWorkout() {
+            if (confirm("هل أنت تأكد من رغبتك في إعادة ضبط كامل البرنامج والتمارين والمؤشرات؟")) {
+                resetOverallTimer();
+                resetSegmentTimer();
+                
+                const checkboxes = document.querySelectorAll('.ex-check');
+                checkboxes.forEach(cb => cb.checked = false);
+                
+                setCurrentSegment(0);
+                updateProgress();
+            }
+        }
+    </script>
+</body>
+</html>
